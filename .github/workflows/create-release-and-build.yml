@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  
+  pull_request:
+    branches:
+      - main  # Trigger on pull request merges into main
+    types:
+      - closed  # Only trigger when the pull request is closed (includes merges)
 
 jobs:
   release:
