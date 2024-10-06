@@ -1,11 +1,8 @@
 // TODO: CLeanup and split code
-
+import { getZoneById, sendCommandToZone, sendGroupCommandToZone } from '../../backend/zonemanager';
 import { config, processAudioServerConfig } from '../../config/config';
 import logger from '../../utils/troxorlogger';
 import NodeRSA from 'node-rsa';
-import { getZoneById, sendCommandToZone, sendGroupCommandToZone } from '../../backend/zonemanager';
-import { stringify } from 'querystring';
-import { asyncCrc32 } from '../../utils/crc32utils';
 
 const rsaKey = new NodeRSA({ b: 2048 });
 rsaKey.setOptions({ encryptionScheme: 'pkcs1' });
@@ -20,6 +17,7 @@ const COMMAND_AUDIO_CFG_READY = 'audio/cfg/ready';
 const COMMAND_AUDIO_CFG_GETCONFIG = 'audio/cfg/getconfig';
 const COMMAND_AUDIO_CFG_SETCONFIG = 'audio/cfg/setconfig';
 const COMMAND_AUDIO_CFG_GET_KEY = 'audio/cfg/getkey';
+const COMMAND_AUDIO_CFG_GET_INPUTS = 'audio/cfg/getinputs';
 const COMMAND_AUDIO_CFG_GET_MEDIA_FOLDER = 'audio/cfg/getmediafolder';
 const COMMAND_AUDIO_CFG_GET_PLAYLISTS = 'audio/cfg/getplaylists2/lms';
 const COMMAND_AUDIO_CFG_GET_RADIOS = 'audio/cfg/getradios';
@@ -193,6 +191,9 @@ function audioCfgGetPlaylists(url: string) {
     },
   ]);
 }
+function audioCfgGetInputs(url: string) {
+  return `{"getinputs_result": [], "command": "audio/cfg/getinputs"}`;
+}
 
 function audioCfgGetSyncedPlayers(url: string) {
   return emptyCommand(url, []);
@@ -308,6 +309,9 @@ export const handleLoxoneCommand = (trimmedUrl: string): any => {
 
     case new RegExp(`(?:^|/)${COMMAND_AUDIO_CFG_GET_KEY}(?:/|$)`).test(trimmedUrl):
       return audioCfgGetKey(trimmedUrl);
+
+    case new RegExp(`(?:^|/)${COMMAND_AUDIO_CFG_GET_INPUTS}(?:/|$)`).test(trimmedUrl):
+      return audioCfgGetInputs(trimmedUrl);
 
     case new RegExp(`(?:^|/)${COMMAND_AUDIO_CFG_GET_MEDIA_FOLDER}(?:/|$)`).test(trimmedUrl):
       return audioCfgGetMediaFolder(trimmedUrl);
