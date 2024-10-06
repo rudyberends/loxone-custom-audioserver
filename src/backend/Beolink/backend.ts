@@ -8,16 +8,18 @@ import { getZoneById, updateZoneTrack, Track, sendCommandToZone, updateZoneGroup
 
 // Define the NotificationData interface to structure the notification data
 interface NotificationData {
-  friendlyName?: string;
-  playQueueItemId?: string;
   speaker?: {
     level: number; // Volume level of the speaker
   };
   artist?: string; // Artist of the currently playing track
   album?: string; // Album of the currently playing track
   name?: string; // Name of the currently playing track
+  liveDescription?: string | undefined;
+  friendlyName?: string;
+  playQueueItemId?: string;
   duration?: number; // Duration of the currently playing track
   trackImage?: { url: string }[]; // Array of track images, where each image has a URL
+  image?: any;
   state?: string; // Current state of the playback (e.g., playing, paused)
   position?: number; // Current playback position in seconds
 }
@@ -159,6 +161,16 @@ export default class BackendBeolink extends Backend {
         }
         return trackInfo;
       }
+
+      case 'NOW_PLAYING_NET_RADIO':
+        return {
+          audiotype: 1,
+          artist: data.liveDescription,
+          album: data.album,
+          title: data.name,
+          duration: 0,
+          coverurl: `http://${config.audioserver?.ip}:7091/cors-proxy?url=${encodeURIComponent(data.image?.[0]?.url || '')}&id=${encodeURIComponent(data.album || 'x')}`,
+        };
 
       case 'SHUTDOWN':
       case 'NOW_PLAYING_ENDED':
