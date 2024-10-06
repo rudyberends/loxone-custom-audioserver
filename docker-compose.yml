@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  loxoneaudioserver:
+    container_name: loxone-custom-audioserver
+    image: ghcr.io/rudyberends/rudyberends/loxone-custom-audioserver:latest
+    hostname: audioserver
+    env_file:
+        - .env.example
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - 7091:7091
+      - 7095:7095
